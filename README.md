@@ -162,15 +162,3 @@
    在 Fork 右上角按 **Push**，把這串 commit 推到你自己的 repo。
 
 > 重點：**練習把需求拆小、用一句話對 Cursor 下指令**，每完成一小步就 commit，方便回顧與除錯。
-
----
-
-## 7. 講師示範時可以涵蓋的主題
-
-- 使用 Fork clone 講師 repo、修改 remote 指向自己的 GitHub。
-- `.gitignore` 在 Unity 專案中的重要性（避免把 `Library/` 等巨大資料夾推上雲端）。
-- 在 Fork 中實際操作原子化 commit（一步一步新增某個小功能）。
-- 透過 Fork 的歷史視圖觀察 commit 記錄。
-
-如有額外進階內容（例如 Pull Request、Code Review 流程），可依實際課程時間再補充。  
-歡迎依照講師實際需求調整本說明文件內容。
