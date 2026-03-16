@@ -18,6 +18,7 @@ public class MiniDrumManager : MonoBehaviour
     [SerializeField] private AudioClip kickClip;
     [SerializeField] private AudioClip snareClip;
     [SerializeField] private AudioClip closedHiHatClip;
+    [SerializeField] private AudioClip cowbellClip;
 
     [Header("自動生成鼓組視覺設定")]
     [SerializeField] private bool autoCreateVisualCubes = true;
@@ -27,11 +28,13 @@ public class MiniDrumManager : MonoBehaviour
     [SerializeField] private Color kickColor = new Color(0.6f, 0.25f, 0.2f);
     [SerializeField] private Color snareColor = new Color(0.35f, 0.35f, 0.4f);
     [SerializeField] private Color closedHiHatColor = new Color(0.75f, 0.7f, 0.5f);
+    [SerializeField] private Color cowbellColor = new Color(0.9f, 0.8f, 0.5f);
 
     [Header("對應的可視方塊 (若 autoCreateVisualCubes 為 false，可手動指定)")]
     [SerializeField] private Transform kickVisual;
     [SerializeField] private Transform snareVisual;
     [SerializeField] private Transform closedHiHatVisual;
+    [SerializeField] private Transform cowbellVisual;
 
     [Header("動畫參數")]
     [SerializeField] private float hitScaleMultiplier = 1.2f;
@@ -40,10 +43,12 @@ public class MiniDrumManager : MonoBehaviour
     private AudioSource kickSource;
     private AudioSource snareSource;
     private AudioSource closedHiHatSource;
+    private AudioSource cowbellSource;
 
     private Vector3 kickOriginalScale;
     private Vector3 snareOriginalScale;
     private Vector3 closedHiHatOriginalScale;
+    private Vector3 cowbellOriginalScale;
 
     private void Awake()
     {
@@ -62,6 +67,11 @@ public class MiniDrumManager : MonoBehaviour
         if (closedHiHatClip == null)
         {
             closedHiHatClip = TryLoadClip("ClosedHiHat");
+        }
+
+        if (cowbellClip == null)
+        {
+            cowbellClip = TryLoadClip("Cowbell");
         }
 
         // 自動或手動建立可視方塊
@@ -86,16 +96,23 @@ public class MiniDrumManager : MonoBehaviour
             {
                 closedHiHatVisual = transform;
             }
+
+            if (cowbellVisual == null)
+            {
+                cowbellVisual = transform;
+            }
         }
 
         // 為每個鼓自動建立 AudioSource（若不存在）
         kickSource = CreateAudioSource("KickAudioSource", kickClip);
         snareSource = CreateAudioSource("SnareAudioSource", snareClip);
         closedHiHatSource = CreateAudioSource("ClosedHiHatAudioSource", closedHiHatClip);
+        cowbellSource = CreateAudioSource("CowbellAudioSource", cowbellClip);
 
         kickOriginalScale = kickVisual != null ? kickVisual.localScale : Vector3.one;
         snareOriginalScale = snareVisual != null ? snareVisual.localScale : Vector3.one;
         closedHiHatOriginalScale = closedHiHatVisual != null ? closedHiHatVisual.localScale : Vector3.one;
+        cowbellOriginalScale = cowbellVisual != null ? cowbellVisual.localScale : Vector3.one;
     }
 
     private void Update()
@@ -116,6 +133,12 @@ public class MiniDrumManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             PlayDrum(closedHiHatSource, closedHiHatVisual, closedHiHatOriginalScale);
+        }
+
+        // L -> Cowbell
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            PlayDrum(cowbellSource, cowbellVisual, cowbellOriginalScale);
         }
     }
 
@@ -182,6 +205,13 @@ public class MiniDrumManager : MonoBehaviour
         {
             Vector3 pos = origin + new Vector3(-0.85f * s, 0.7f * s, 0.65f * s);
             closedHiHatVisual = CreateDrumVisual("ClosedHiHat", pos, closedHiHatColor, new Vector3(0.65f * s, 0.06f * s, 0.65f * s), PrimitiveType.Cylinder, Quaternion.identity);
+        }
+
+        if (cowbellVisual == null)
+        {
+            Vector3 pos = origin + new Vector3(0.95f * s, 0.65f * s, 0.4f * s);
+            Vector3 cowbellScale = new Vector3(0.35f * s, 0.18f * s, 0.35f * s);
+            cowbellVisual = CreateDrumVisual("Cowbell", pos, cowbellColor, cowbellScale, PrimitiveType.Cube, Quaternion.identity);
         }
     }
 
