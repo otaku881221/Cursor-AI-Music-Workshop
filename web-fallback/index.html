@@ -42,16 +42,18 @@
     .pad.kick  { background: #c44; }
     .pad.snare { background: #48a; }
     .pad.hihat { background: #ca4; color: #333; }
+    .pad.crash { background: #ddd56a; color: #333; }
     .pad .key { font-size: 1.1rem; font-weight: bold; margin-top: 0.25rem; }
   </style>
 </head>
 <body>
   <h1>Mini Drum（網頁版備案）</h1>
-  <p class="hint">Space = 大鼓 · J = 小鼓 · K = 開合鈸（點擊或按鍵）</p>
+  <p class="hint">Space = 大鼓 · J = 小鼓 · K = 開合鈸 · L = Crash（點擊或按鍵）</p>
   <div class="pads">
     <div class="pad kick"  data-key=" ">Kick<br><span class="key">Space</span></div>
     <div class="pad snare" data-key="j">Snare<br><span class="key">J</span></div>
     <div class="pad hihat" data-key="k">Hi-Hat<br><span class="key">K</span></div>
+    <div class="pad crash" data-key="l">Crash<br><span class="key">L</span></div>
   </div>
 
   <script>
@@ -108,8 +110,25 @@
         n.connect(g); g.connect(c.destination);
         n.start(c.currentTime);
       }
-      var sounds = { ' ': playKick, 'j': playSnare, 'k': playHiHat };
-      var pads = { ' ': '.kick', 'j': '.snare', 'k': '.hihat' };
+      function playCrash() {
+        var c = getCtx();
+        var duration = 0.9;
+        var buf = c.createBuffer(1, c.sampleRate * duration, c.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) {
+          var t = i / data.length;
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2.5);
+        }
+        var n = c.createBufferSource();
+        n.buffer = buf;
+        var g = c.createGain();
+        g.gain.setValueAtTime(0.3, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + duration);
+        n.connect(g); g.connect(c.destination);
+        n.start(c.currentTime);
+      }
+      var sounds = { ' ': playKick, 'j': playSnare, 'k': playHiHat, 'l': playCrash };
+      var pads = { ' ': '.kick', 'j': '.snare', 'k': '.hihat', 'l': '.crash' };
       function hit(key) {
         key = key.toLowerCase();
         var fn = sounds[key];
@@ -120,6 +139,7 @@
         if (e.code === 'Space') { e.preventDefault(); hit(' '); }
         else if (e.key.toLowerCase() === 'j') hit('j');
         else if (e.key.toLowerCase() === 'k') hit('k');
+        else if (e.key.toLowerCase() === 'l') hit('l');
       });
       document.querySelectorAll('.pad').forEach(function (el) {
         el.addEventListener('mousedown', function () { hit(el.getAttribute('data-key')); });
