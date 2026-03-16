@@ -35,7 +35,7 @@
 ### 4. Unity Hub（遊戲開發環境）
 
 - **下載連結：** 請依提供的 Unity Hub 連結或前往 [Unity 官網](https://unity.com/) 下載。
-- **注意：** 需登入才可下載（可用 Google 或 Apple 帳號快速登入）。若環境安裝耗時，當天亦有 Web 開發備案。
+- **注意：** 需登入才可下載（可用 Google 或 Apple 帳號快速登入）。若環境安裝耗時或無法使用 Unity，請改用下方 **「若無法使用 Unity：網頁版備案」**。
 
 ---
 
@@ -47,6 +47,21 @@
 
 - **請記住 Unity 專案的路徑**，等下要用 **Cursor** 開啟這個專案資料夾進行開發。  
   建議建立一個固定資料夾，例如：`C:\Users\<你的帳號>\Projects\Cursor-AI-Music-Workshop`。
+
+---
+
+## 2b. 若無法使用 Unity：網頁版備案
+
+若 Unity 安裝太久、無法順利執行，或當天環境不允許，可改用專案內的 **網頁版鼓機**，一樣能練習「用 Cursor 下指令改程式」與「Fork 原子化 commit」。
+
+- **位置**：專案資料夾內的 `web-fallback/`。
+- **使用方式**：
+  1. 用瀏覽器開啟 `web-fallback/index.html`（雙擊或右鍵 → 以瀏覽器開啟）。
+  2. 按鍵與 Unity 版相同：**Space** = 大鼓、**J** = 小鼓、**K** = 開合鈸。
+  3. 用 **Cursor** 開啟本專案（或只開 `web-fallback` 資料夾），對 `index.html` 或新增的檔案下指令做修改。
+  4. 用 **Fork** 對 `web-fallback/` 的變更做原子化 commit、Push 到自己 GitHub，流程與 Unity 版相同。
+
+- **說明**：鼓聲由 Web Audio API 即時合成，不需額外音檔；可依工作坊需求用 Cursor 擴充（例如新增按鍵、樣式、BPM 顯示等）。詳見 `web-fallback/README.md`。
 
 ---
 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Drum - 網頁版備案</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+    }
+    h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .hint { font-size: 0.85rem; color: #888; margin-bottom: 1.5rem; }
+    .pads {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .pad {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.06s ease-out;
+      user-select: none;
+    }
+    .pad:active { transform: scale(0.92); }
+    .pad.hit { transform: scale(1.08); }
+    .pad.kick  { background: #c44; }
+    .pad.snare { background: #48a; }
+    .pad.hihat { background: #ca4; color: #333; }
+    .pad .key { font-size: 1.1rem; font-weight: bold; margin-top: 0.25rem; }
+  </style>
+</head>
+<body>
+  <h1>Mini Drum（網頁版備案）</h1>
+  <p class="hint">Space = 大鼓 · J = 小鼓 · K = 開合鈸（點擊或按鍵）</p>
+  <div class="pads">
+    <div class="pad kick"  data-key=" ">Kick<br><span class="key">Space</span></div>
+    <div class="pad snare" data-key="j">Snare<br><span class="key">J</span></div>
+    <div class="pad hihat" data-key="k">Hi-Hat<br><span class="key">K</span></div>
+  </div>
+
+  <script>
+    (function () {
+      var ctx = null;
+      function getCtx() {
+        if (ctx) return ctx;
+        ctx = new (window.AudioContext || window.webkitAudioContext)();
+        return ctx;
+      }
+      function playKick() {
+        var c = getCtx();
+        var o = c.createOscillator();
+        var g = c.createGain();
+        o.connect(g); g.connect(c.destination);
+        o.frequency.setValueAtTime(150, c.currentTime);
+        o.frequency.exponentialRampToValueAtTime(0.01, c.currentTime + 0.15);
+        o.type = 'sine';
+        g.gain.setValueAtTime(0.4, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.15);
+        o.start(c.currentTime); o.stop(c.currentTime + 0.15);
+      }
+      function playSnare() {
+        var c = getCtx();
+        var buf = c.createBuffer(1, c.sampleRate * 0.15, c.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.03));
+        var n = c.createBufferSource();
+        n.buffer = buf;
+        var g = c.createGain();
+        g.gain.setValueAtTime(0.25, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.12);
+        n.connect(g); g.connect(c.destination);
+        n.start(c.currentTime);
+        var o = c.createOscillator();
+        var g2 = c.createGain();
+        o.connect(g2); g2.connect(c.destination);
+        o.frequency.setValueAtTime(200, c.currentTime);
+        o.frequency.exponentialRampToValueAtTime(0.01, c.currentTime + 0.08);
+        g2.gain.setValueAtTime(0.15, c.currentTime);
+        g2.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.08);
+        o.start(c.currentTime); o.stop(c.currentTime + 0.08);
+      }
+      function playHiHat() {
+        var c = getCtx();
+        var buf = c.createBuffer(1, c.sampleRate * 0.08, c.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+        var n = c.createBufferSource();
+        n.buffer = buf;
+        var g = c.createGain();
+        g.gain.setValueAtTime(0.2, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, c.currentTime + 0.06);
+        n.connect(g); g.connect(c.destination);
+        n.start(c.currentTime);
+      }
+      var sounds = { ' ': playKick, 'j': playSnare, 'k': playHiHat };
+      var pads = { ' ': '.kick', 'j': '.snare', 'k': '.hihat' };
+      function hit(key) {
+        key = key.toLowerCase();
+        var fn = sounds[key];
+        if (fn) { fn(); var el = document.querySelector(pads[key]); if (el) { el.classList.add('hit'); setTimeout(function() { el.classList.remove('hit'); }, 80); } }
+      }
+      document.addEventListener('keydown', function (e) {
+        if (e.repeat) return;
+        if (e.code === 'Space') { e.preventDefault(); hit(' '); }
+        else if (e.key.toLowerCase() === 'j') hit('j');
+        else if (e.key.toLowerCase() === 'k') hit('k');
+      });
+      document.querySelectorAll('.pad').forEach(function (el) {
+        el.addEventListener('mousedown', function () { hit(el.getAttribute('data-key')); });
+      });
+    })();
+  </script>
+</body>
+</html>
