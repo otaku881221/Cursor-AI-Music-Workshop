@@ -19,14 +19,14 @@ public class MiniDrumManager : MonoBehaviour
     [SerializeField] private AudioClip snareClip;
     [SerializeField] private AudioClip closedHiHatClip;
 
-    [Header("自動生成鼓方塊設定")]
+    [Header("自動生成鼓組視覺設定")]
     [SerializeField] private bool autoCreateVisualCubes = true;
-    [SerializeField] private float cubeSize = 1f;
-    [SerializeField] private float cubeSpacing = 1.6f;
     [SerializeField] private Vector3 basePosition = Vector3.zero;
-    [SerializeField] private Color kickColor = new Color(1f, 0.4f, 0.4f);
-    [SerializeField] private Color snareColor = new Color(0.4f, 0.8f, 1f);
-    [SerializeField] private Color closedHiHatColor = new Color(1f, 1f, 0.4f);
+    [Tooltip("爵士鼓相對位置與大小可在此微調")]
+    [SerializeField] private float drumLayoutScale = 1f;
+    [SerializeField] private Color kickColor = new Color(0.6f, 0.25f, 0.2f);
+    [SerializeField] private Color snareColor = new Color(0.35f, 0.35f, 0.4f);
+    [SerializeField] private Color closedHiHatColor = new Color(0.75f, 0.7f, 0.5f);
 
     [Header("對應的可視方塊 (若 autoCreateVisualCubes 為 false，可手動指定)")]
     [SerializeField] private Transform kickVisual;
@@ -160,46 +160,52 @@ public class MiniDrumManager : MonoBehaviour
 
     private void CreateDefaultVisualCubes()
     {
-        // 以管理器所在位置為基準
         Vector3 origin = transform.position + basePosition;
+        float s = drumLayoutScale;
 
-        // Kick 在左
+        // 爵士鼓擺放：大鼓橫放、略右略下不壓到小鼓，小鼓在大鼓左側，開合鈸再更左、更高
         if (kickVisual == null)
         {
-            kickVisual = CreateCubeVisual("KickCube", origin + Vector3.left * cubeSpacing, kickColor);
+            Vector3 pos = origin + new Vector3(0.5f * s, -0.5f * s, 0.8f * s);
+            Vector3 kickScale = new Vector3(1.2f * s, 0.4f * s, 1.2f * s);
+            kickVisual = CreateDrumVisual("KickDrum", pos, kickColor, kickScale, PrimitiveType.Cylinder, Quaternion.Euler(0f, 90f, 90f));
         }
 
-        // Snare 在中間
         if (snareVisual == null)
         {
-            snareVisual = CreateCubeVisual("SnareCube", origin, snareColor);
+            Vector3 pos = origin + new Vector3(-0.38f * s, 0.22f * s, 0.1f * s);
+            Vector3 snareScale = new Vector3(0.5f * s, 0.15f * s, 0.5f * s);
+            snareVisual = CreateDrumVisual("SnareDrum", pos, snareColor, snareScale, PrimitiveType.Cylinder, Quaternion.identity);
         }
 
-        // HiHat 在右
         if (closedHiHatVisual == null)
         {
-            closedHiHatVisual = CreateCubeVisual("ClosedHiHatCube", origin + Vector3.right * cubeSpacing, closedHiHatColor);
+            Vector3 pos = origin + new Vector3(-0.85f * s, 0.7f * s, 0.65f * s);
+            closedHiHatVisual = CreateDrumVisual("ClosedHiHat", pos, closedHiHatColor, new Vector3(0.65f * s, 0.06f * s, 0.65f * s), PrimitiveType.Cylinder, Quaternion.identity);
         }
     }
 
-    private Transform CreateCubeVisual(string name, Vector3 position, Color color)
+    private Transform CreateDrumVisual(string name, Vector3 position, Color color, Vector3 scale, PrimitiveType primitiveType, Quaternion rotation = default)
     {
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.name = name;
-        cube.transform.SetParent(transform);
-        cube.transform.position = position;
-        cube.transform.localScale = Vector3.one * cubeSize;
+        if (rotation == default)
+            rotation = Quaternion.identity;
 
-        var renderer = cube.GetComponent<Renderer>();
+        GameObject drum = GameObject.CreatePrimitive(primitiveType);
+        drum.name = name;
+        drum.transform.SetParent(transform);
+        drum.transform.position = position;
+        drum.transform.rotation = rotation;
+        drum.transform.localScale = scale;
+
+        var renderer = drum.GetComponent<Renderer>();
         if (renderer != null)
         {
-            // 使用一個新的材質，避免改到內建材質
             Material mat = new Material(renderer.sharedMaterial);
             mat.color = color;
             renderer.material = mat;
         }
 
-        return cube.transform;
+        return drum.transform;
     }
 
     private void PlayDrum(AudioSource source, Transform visual, Vector3 originalScale)
