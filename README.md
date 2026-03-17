@@ -1,6 +1,6 @@
 # Cursor AI Music Workshop - Mini Drum
 
-這是你在工作坊中要使用的 Unity 專案基底，用來示範：
+這是工作坊中要使用的 Unity 專案基底，用來示範：
 
 - 使用 Unity 建立簡單的互動「迷你鼓機」
 - 透過 Git / GitHub / Fork 進行版本控制
@@ -10,7 +10,7 @@
 
 ## 1. 事前必備軟體與安裝連結
 
-請在課前盡量完成以下安裝與檢查：
+請完成以下安裝與檢查：
 
 ### 1. Git（版本控制核心引擎）
 
@@ -61,7 +61,7 @@
   3. 用 **Cursor** 開啟本專案（或只開 `web-fallback` 資料夾），對 `index.html` 或新增的檔案下指令做修改。
   4. 用 **Fork** 對 `web-fallback/` 的變更做原子化 commit、Push 到自己 GitHub，流程與 Unity 版相同。
 
-- **說明**：鼓聲由 Web Audio API 即時合成，不需額外音檔；可依工作坊需求用 Cursor 擴充（例如新增按鍵、樣式、BPM 顯示等）。詳見 `web-fallback/README.md`。
+- **說明**：鼓聲由 Web Audio API 即時合成，不需額外音檔；可依需求用 Cursor 擴充（例如新增按鍵、樣式、BPM 顯示等）。詳見 `web-fallback/README.md`。
 
 ---
 
@@ -79,11 +79,11 @@
 
 ---
 
-## 4. 學員當天流程（先用 Fork clone 講師 repo，再改 remote 推到自己 GitHub）
+## 4. 流程（先用 Fork clone 該 repo，再改 remote 推到自己 GitHub）
 
-講師的 GitHub 專案連結：[https://github.com/otaku881221/Cursor-AI-Music-Workshop](https://github.com/otaku881221/Cursor-AI-Music-Workshop)
+該 GitHub 專案連結：[https://github.com/otaku881221/Cursor-AI-Music-Workshop](https://github.com/otaku881221/Cursor-AI-Music-Workshop)
 
-### 4-1. 使用 Fork 從講師 repo clone 專案
+### 4-1. 使用 Fork 從該 repo clone 專案
 
 1. 開啟 **Fork** 應用程式。
 2. 在 Fork 上方選單點選 **「File → Clone…」**（或介面中的 Clone 按鈕）。
@@ -115,11 +115,11 @@
    - 將 URL 改成你剛才在 GitHub 建立 repo 的網址，例如：  
      `https://github.com/<你的帳號>/Cursor-AI-Music-Workshop.git`
    - 按 **Save** 儲存。
-5. 完成後，這個本機專案的 `origin` remote 已經指向「你自己的 GitHub repo」，之後的 Push 都會推到你自己的帳號，不會影響講師原始專案。
+5. 完成後，這個本機專案的 `origin` remote 已經指向「你自己的 GitHub repo」，之後的 Push 都會推到你自己的帳號，不會影響該原始專案。
 
 ### 4-4. 第一次 Push 到自己的 GitHub
 
-1. 在 Fork 中確認目前是否有未提交的變更（第一次通常是跟講師專案一樣，不需要變更也可以先推上去）。
+1. 在 Fork 中確認目前是否有未提交的變更（第一次通常是跟該專案一樣，不需要變更也可以先推上去）。
 2. 在 Fork 右上角按下 **「Push」**。
 3. 如果出現確認視窗，確定：
    - Remote：`origin`（即你自己的 repo）
